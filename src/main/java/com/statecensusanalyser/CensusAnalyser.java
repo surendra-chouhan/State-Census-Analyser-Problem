@@ -54,7 +54,7 @@ public class CensusAnalyser {
             }
         }
         catch (Exception e){
-            System.out.println(e.getMessage());
+            throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE);
         }
         return numOfEntries;
     }

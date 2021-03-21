@@ -6,10 +6,10 @@ import org.junit.Test;
 
 public class CensusAnalyserTest {
     CensusAnalyser censusAnalyser;
-    private String correctPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCensusData.csv";
+    private String stateCensusCorrectPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCensusData.csv";
     private String wrongPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateData.csv";
     private String wrongFiletype = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCensusData.txt";
-    private String stateCodeFilePath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCode.csv";
+    private String stateCodeCorrectPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCode.csv";
 
     @Before
     public void set() {
@@ -18,7 +18,7 @@ public class CensusAnalyserTest {
 
     @Test
     public void givenDataWhenLoadedShouldReturnNumberOfRecords() throws CensusAnalyserException {
-        Assert.assertEquals(29, censusAnalyser.loadData(correctPath));
+        Assert.assertEquals(29, censusAnalyser.loadData(stateCensusCorrectPath));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CensusAnalyserTest {
     @Test
     public void givenWrongDelimiterShouldThrowCustomException() {
         try{
-            censusAnalyser.loadData(correctPath);
+            censusAnalyser.loadData(stateCensusCorrectPath);
         }
         catch (CensusAnalyserException e) {
             System.out.println(e.type);
@@ -57,7 +57,7 @@ public class CensusAnalyserTest {
     @Test
     public void givenWrongHeaderShouldThrowCustomException() {
         try{
-            censusAnalyser.loadData(stateCodeFilePath);
+            censusAnalyser.loadData(stateCodeCorrectPath);
         }
         catch (CensusAnalyserException e) {
             System.out.println(e.getMessage());
@@ -67,7 +67,18 @@ public class CensusAnalyserTest {
 
     @Test
     public void givenIndianStateCodeCSVFilePathShouldReturnCorrectNumberOfRecords() throws CensusAnalyserException {
-        int numOfEntries = censusAnalyser.loadStateCodeData(stateCodeFilePath);
+        int numOfEntries = censusAnalyser.loadStateCodeData(stateCodeCorrectPath);
         Assert.assertEquals(37, numOfEntries);
+    }
+
+    @Test
+    public void givenDataFromWrongPathforStateCodeShouldReturnCustomExceptions() throws CensusAnalyserException{
+        try{
+            censusAnalyser.loadData(wrongPath);
+        }
+        catch(CensusAnalyserException e){
+            System.out.println(e.type);
+            Assert.assertEquals(e.type, CensusAnalyserException.ExceptionType.WRONG_FILE);
+        }
     }
 }
