@@ -81,4 +81,15 @@ public class CensusAnalyserTest {
             Assert.assertEquals(e.type, CensusAnalyserException.ExceptionType.WRONG_FILE);
         }
     }
+
+    @Test
+    public void givenWrongFileTypeForStateCodeShouldThrowCustomException() throws CensusAnalyserException {
+        try{
+            censusAnalyser.loadData(wrongFiletype);
+        }
+        catch(CensusAnalyserException e) {
+            System.out.println(e.type);
+            Assert.assertEquals(e.type, CensusAnalyserException.ExceptionType.WRONG_FILE_TYPE);
+        }
+    }
 }

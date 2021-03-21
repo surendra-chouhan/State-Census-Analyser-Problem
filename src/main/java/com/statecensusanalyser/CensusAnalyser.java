@@ -16,46 +16,46 @@ public class CensusAnalyser {
             try {
                 Reader reader = Files.newBufferedReader(Paths.get(path));
                 CsvToBean<CSVStateCensusAnalyser> csvToBean = new CsvToBeanBuilder(reader).
-                                                              withType(CSVStateCensusAnalyser.class).
-                                                              withIgnoreLeadingWhiteSpace(true).
-                                                              build();
+                        withType(CSVStateCensusAnalyser.class).
+                        withIgnoreLeadingWhiteSpace(true).
+                        build();
                 Iterator<CSVStateCensusAnalyser> csvStateCensusAnalyserIterator = csvToBean.iterator();
-                Iterable<CSVStateCensusAnalyser> iterator=() -> csvStateCensusAnalyserIterator;
-                return (int) StreamSupport.stream(iterator.spliterator(),false).count();
-            }
-            catch (IOException e) {
+                Iterable<CSVStateCensusAnalyser> iterator = () -> csvStateCensusAnalyserIterator;
+                return (int) StreamSupport.stream(iterator.spliterator(), false).count();
+            } catch (IOException e) {
                 throw new CensusAnalyserException("Invalid File path", CensusAnalyserException.ExceptionType.WRONG_FILE);
-            }
-            catch (RuntimeException e) {
-                if(e.getMessage().contains("CSV header"))
+            } catch (RuntimeException e) {
+                if (e.getMessage().contains("CSV header"))
                     throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_HEADER);
 
                 throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE_DELIMITER);
             }
-        }
-        else {
+        } else {
             throw new CensusAnalyserException("Invalid File Type", CensusAnalyserException.ExceptionType.WRONG_FILE_TYPE);
         }
     }
 
     public int loadStateCodeData(String path) throws CensusAnalyserException {
-        int numOfEntries = 0;
-        try{
-            Reader reader = Files.newBufferedReader(Paths.get(path));
-            CsvToBean<CSVStateCodeAnalyser> csvToBean = new CsvToBeanBuilder(reader).
-                                                        withType(CSVStateCodeAnalyser.class).
-                                                        withIgnoreLeadingWhiteSpace(true).
-                                                        build();
+        if (path.contains(".csv")) {
+            int numOfEntries = 0;
+            try {
+                Reader reader = Files.newBufferedReader(Paths.get(path));
+                CsvToBean<CSVStateCodeAnalyser> csvToBean = new CsvToBeanBuilder(reader).
+                        withType(CSVStateCodeAnalyser.class).
+                        withIgnoreLeadingWhiteSpace(true).
+                        build();
 
-            Iterator<CSVStateCodeAnalyser> csvStateCensusAnalyserIterator = csvToBean.iterator();
-            while(csvStateCensusAnalyserIterator.hasNext()) {
-                CSVStateCodeAnalyser censusAnalyser = csvStateCensusAnalyserIterator.next();
-                numOfEntries++;
+                Iterator<CSVStateCodeAnalyser> csvStateCensusAnalyserIterator = csvToBean.iterator();
+                while (csvStateCensusAnalyserIterator.hasNext()) {
+                    CSVStateCodeAnalyser censusAnalyser = csvStateCensusAnalyserIterator.next();
+                    numOfEntries++;
+                }
+            } catch (IOException e) {
+                throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE);
             }
+            return numOfEntries;
+        } else {
+            throw new CensusAnalyserException("Wrong File Type", CensusAnalyserException.ExceptionType.WRONG_FILE_TYPE);
         }
-        catch (Exception e){
-            throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE);
-        }
-        return numOfEntries;
     }
 }
