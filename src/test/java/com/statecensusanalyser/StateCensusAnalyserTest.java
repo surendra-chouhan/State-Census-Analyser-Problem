@@ -6,7 +6,8 @@ import org.junit.Test;
 
 public class StateCensusAnalyserTest {
     StateCensusAnalyser stateCensusAnalyser;
-    private String path = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCensusData.csv";
+    private String correctPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCensusData.csv";
+    private String wrongPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateData";
 
     @Before
     public void set() {
@@ -14,8 +15,17 @@ public class StateCensusAnalyserTest {
     }
 
     @Test
-    public void givenDataWhenLoadedShouldReturnNumberOfRecords() {
-        int size = stateCensusAnalyser.loadData(path);
-        Assert.assertEquals(29, size);
+    public void givenDataWhenLoadedShouldReturnNumberOfRecords() throws CensusAnalyserException {
+        Assert.assertEquals(29, stateCensusAnalyser.loadData(correctPath));
+    }
+
+    @Test
+    public void givenDataWhenFromWrongPathShouldReturnCustomExceptions() throws CensusAnalyserException{
+        try{
+            stateCensusAnalyser.loadData(wrongPath);
+        }
+        catch(CensusAnalyserException e){
+            throw new CensusAnalyserException("Wrong File Path");
+        }
     }
 }

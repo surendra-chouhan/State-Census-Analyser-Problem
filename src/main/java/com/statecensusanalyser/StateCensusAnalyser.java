@@ -6,11 +6,11 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
-import java.util.stream.StreamSupport;
+import java.io.IOException;
 
 public class StateCensusAnalyser {
-    public int loadData(String path) {
-        int i = 0;
+    public int loadData(String path) throws CensusAnalyserException {
+        int numberOfEntries = 0;
         try {
             Reader reader = Files.newBufferedReader(Paths.get(path));
             CsvToBean<CSVStateCensusAnalyser> csvToBean = new CsvToBeanBuilder(reader).
@@ -26,12 +26,12 @@ public class StateCensusAnalyser {
                 System.out.println("AreaInSqKm : " + censusAnalyser.getAreaInSqKm());
                 System.out.println("DensityPerSqKm : " + censusAnalyser.getDensityPerSqKm());
                 System.out.println("\n=====================\n");
-                i++;
+                numberOfEntries++;
             }
         }
-        catch (Exception e) {
+        catch (IOException e) {
             e.printStackTrace();
         }
-        return i;
+        return numberOfEntries;
     }
 }
