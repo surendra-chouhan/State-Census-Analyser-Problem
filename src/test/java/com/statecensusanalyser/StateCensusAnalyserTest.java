@@ -7,8 +7,9 @@ import org.junit.Test;
 public class StateCensusAnalyserTest {
     StateCensusAnalyser stateCensusAnalyser;
     private String correctPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCensusData.csv";
-    private String wrongPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateData";
-
+    private String wrongPath = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateData.csv";
+    private String wrongFiletype = "C:\\Users\\Surendra\\IdeaProjects\\StateCensusAnalyser\\src\\main\\resources\\IndiaStateCensusData.txt";
+    
     @Before
     public void set() {
         stateCensusAnalyser = new StateCensusAnalyser();
@@ -25,7 +26,19 @@ public class StateCensusAnalyserTest {
             stateCensusAnalyser.loadData(wrongPath);
         }
         catch(CensusAnalyserException e){
-            throw new CensusAnalyserException("Wrong File Path");
+            System.out.println(e.type);
+            Assert.assertEquals(e.type, CensusAnalyserException.ExceptionType.WRONG_FILE);
+        }
+    }
+
+    @Test
+    public void givenWrongFileTypeShouldThrowCustomException() throws CensusAnalyserException {
+        try{
+            stateCensusAnalyser.loadData(wrongFiletype);
+        }
+        catch(CensusAnalyserException e) {
+            System.out.println(e.type);
+            Assert.assertEquals(e.type, CensusAnalyserException.ExceptionType.WRONG_FILE_TYPE);
         }
     }
 }
