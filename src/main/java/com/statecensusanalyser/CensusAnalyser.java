@@ -37,7 +37,6 @@ public class CensusAnalyser {
 
     public int loadStateCodeData(String path) throws CensusAnalyserException {
         if (path.contains(".csv")) {
-            int numOfEntries = 0;
             try {
                 Reader reader = Files.newBufferedReader(Paths.get(path));
                 CsvToBean<CSVStateCodeAnalyser> csvToBean = new CsvToBeanBuilder(reader).
@@ -45,16 +44,18 @@ public class CensusAnalyser {
                         withIgnoreLeadingWhiteSpace(true).
                         build();
 
-                Iterator<CSVStateCodeAnalyser> csvStateCensusAnalyserIterator = csvToBean.iterator();
-                while (csvStateCensusAnalyserIterator.hasNext()) {
-                    CSVStateCodeAnalyser censusAnalyser = csvStateCensusAnalyserIterator.next();
-                    numOfEntries++;
-                }
-            } catch (IOException e) {
+                Iterator<CSVStateCodeAnalyser> csvStateCodeAnalyserIterator = csvToBean.iterator();
+                Iterable<CSVStateCodeAnalyser> iterator=() -> csvStateCodeAnalyserIterator;
+                return (int) StreamSupport.stream(iterator.spliterator(),false).count();
+            }
+            catch (IOException e) {
                 throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE);
             }
-            return numOfEntries;
-        } else {
+            catch(RuntimeException e) {
+                throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.WRONG_FILE_DELIMITER);
+            }
+        }
+        else {
             throw new CensusAnalyserException("Wrong File Type", CensusAnalyserException.ExceptionType.WRONG_FILE_TYPE);
         }
     }
