@@ -41,4 +41,15 @@ public class StateCensusAnalyserTest {
             Assert.assertEquals(e.type, CensusAnalyserException.ExceptionType.WRONG_FILE_TYPE);
         }
     }
+
+    @Test
+    public void givenWrongDelimiterShouldThrowCustomException() {
+        try{
+            stateCensusAnalyser.loadData(correctPath);
+        }
+        catch (CensusAnalyserException e) {
+            System.out.println(e.type);
+            Assert.assertEquals(e.type, CensusAnalyserException.ExceptionType.WRONG_FILE_DELIMITER);
+        }
+    }
 }
