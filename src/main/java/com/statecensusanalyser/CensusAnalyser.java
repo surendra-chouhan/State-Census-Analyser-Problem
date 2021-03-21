@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.io.IOException;
 import java.util.stream.StreamSupport;
 
-public class StateCensusAnalyser {
+public class CensusAnalyser {
     public int loadData(String path) throws CensusAnalyserException {
         if (path.contains(".csv")) {
             int numberOfEntries = 0;
@@ -36,5 +36,26 @@ public class StateCensusAnalyser {
         else {
             throw new CensusAnalyserException("Invalid File Type", CensusAnalyserException.ExceptionType.WRONG_FILE_TYPE);
         }
+    }
+
+    public int loadStateCodeData(String path) throws CensusAnalyserException {
+        int numOfEntries = 0;
+        try{
+            Reader reader = Files.newBufferedReader(Paths.get(path));
+            CsvToBean<CSVStateCodeAnalyser> csvToBean = new CsvToBeanBuilder(reader).
+                                                        withType(CSVStateCodeAnalyser.class).
+                                                        withIgnoreLeadingWhiteSpace(true).
+                                                        build();
+
+            Iterator<CSVStateCodeAnalyser> csvStateCensusAnalyserIterator = csvToBean.iterator();
+            while(csvStateCensusAnalyserIterator.hasNext()) {
+                CSVStateCodeAnalyser censusAnalyser = csvStateCensusAnalyserIterator.next();
+                numOfEntries++;
+            }
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return numOfEntries;
     }
 }
